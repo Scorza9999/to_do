@@ -4,7 +4,14 @@ import platform
 from sys import argv
 
 
-def ask_int(msg: str, min_limit: int, max_limit: int) -> int:
+# Positional only function
+def ask_int(msg: str, min_limit: int, max_limit: int, /) -> int:
+    """ 
+    Ask the user for the operation
+
+    Asks the user for the operation they want to do and warns them if they
+    inputted an impossible value
+    """
     while True:
         try:
             n: int = int(input(msg))
@@ -16,6 +23,7 @@ def ask_int(msg: str, min_limit: int, max_limit: int) -> int:
             print("You must insert a number.")
 
 
+# Pretty self-explaining function name
 def clear_terminal():
     if platform.system() == "Windows":
         os.system('cls')
@@ -23,8 +31,10 @@ def clear_terminal():
         os.system('clear')
 
 
+# Ideally we should tell the user that they already need a text file or provide
+# an option to create one
 if len(argv) == 1:
-    raise SystemExit("You need to provide a file.")
+    raise SystemExit("You need to provide a text file.")
 
 file_path: Path = Path(argv[1])
 # Am i catching all errors?
@@ -44,12 +54,8 @@ except OSError as e:
 try:
     while True:
         clear_terminal()
-        print("0) Exit")
-        print("1) Add")
-        print("2) Remove")
-        print("3) Rename")
-        print("4) Toggle")
-        print()
+        print("0) Exit", "1) Add", "2) Remove", "3) Rename", sep=" \n")
+        print ("4) Toggle \n")
 
         if to_do_list == []:
             print("Empty")
@@ -58,11 +64,25 @@ try:
                 print(to_do, end="")  # To-dos already end with a newline
 
         choice: int = ask_int("Choose an option: ", 0, 4)
-        if choice == 0:
-            break
-        elif choice == 1:
-            name: str = input("Insert name: ")
-            to_do_list.append(f"[ ] {name}\n")
+# I believe that a match statement is more elegant than a bunch of if and elif
+# statements, in the case you disagree and/or there is a performance hit, I 
+# only commented the previous lines out.
+
+#        if choice == 0:
+ #           break
+  #      elif choice == 1:
+            # input() function already returns a string
+   #         name = input("Insert name: ")
+    #        to_do_list.append(f"[ ] {name}\n")       
+        match choice:
+            case 0:
+                break
+            case 1:
+                name = input("Insert name: ")
+                to_do_list.append(f"[ ] {name}\n")
+            case _:
+                print("not implemented yet!")
+
 except KeyboardInterrupt:
     pass
 
